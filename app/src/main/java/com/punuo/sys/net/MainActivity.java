@@ -45,8 +45,11 @@ public class MainActivity extends BaseActivity {
     private TextView netType;
     private static final int SIGN_GET = 0x0001;
 
-    private Button mapbutton;
-
+    private Button rsrpbutton;
+    private Button ulbutton;
+    private Button dlbutton;
+    private Button sinrbutton;
+    private Button pcibutton;
 
     private SDKReceiver mReceiver;
 
@@ -76,7 +79,11 @@ public class MainActivity extends BaseActivity {
         displayIdentity = findViewById(R.id.display_identity);
         netType = findViewById(R.id.netType);
 
-        mapbutton=findViewById(R.id.mapbutton);
+        rsrpbutton=findViewById(R.id.rsrp);
+        ulbutton=findViewById(R.id.ul);
+        dlbutton=findViewById(R.id.dl);
+        sinrbutton=findViewById(R.id.sinr);
+        pcibutton=findViewById(R.id.pci);
         IntentFilter iFilter = new IntentFilter();
         iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_OK);
         iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
@@ -86,15 +93,47 @@ public class MainActivity extends BaseActivity {
 
         mBaseHandler.sendEmptyMessage(SIGN_GET);
         MainActivityPermissionsDispatcher.is5GConnectedWithCheck(this);
-        mapbutton.setOnClickListener(new View.OnClickListener() {
+        rsrpbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,DynamicDemo.class);
                 startActivity(intent);
             }
         });
-    }
 
+        ulbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,ThroughputUL.class);
+                startActivity(intent);
+            }
+        });
+
+        dlbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,ThroughputDL.class);
+                startActivity(intent);
+            }
+        });
+
+        sinrbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,Sinr.class);
+                startActivity(intent);
+            }
+        });
+
+        pcibutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,Pci.class);
+                startActivity(intent);
+            }
+        });
+
+    }
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     void is5GConnected() {
         if (Build.VERSION.SDK_INT >= 29) {

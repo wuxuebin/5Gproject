@@ -12,17 +12,16 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.telephony.CellIdentityNr;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoNr;
 import android.telephony.CellSignalStrengthNr;
 import android.telephony.TelephonyManager;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -52,11 +51,7 @@ import com.punuo.sys.sdk.httplib.RequestListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 此demo实现时时动态画运动轨迹
- * author zhh
- */
-public class DynamicDemo extends Activity implements SensorEventListener {
+public class Pci extends Activity implements SensorEventListener {
 
     // 定位相关
     LocationClient mLocClient;
@@ -96,7 +91,7 @@ public class DynamicDemo extends Activity implements SensorEventListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dyn);
+        setContentView(R.layout.activity_pci);
         ProcessTasks.commonLaunchTasks(PnApplication.getInstance());
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         initView();
@@ -162,11 +157,11 @@ public class DynamicDemo extends Activity implements SensorEventListener {
         progressBarRl = (RelativeLayout) findViewById(R.id.progressBarRl);
         position = findViewById(R.id.LatandLong);
 
-        getstation.setOnClickListener(new OnClickListener() {
+        getstation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText editText = new EditText(DynamicDemo.this);
-                new AlertDialog.Builder(DynamicDemo.this).setTitle("请输入基站ID").setView(editText).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                final EditText editText = new EditText(Pci.this);
+                new AlertDialog.Builder(Pci.this).setTitle("请输入基站ID").setView(editText).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         getStationLocation(editText.getText().toString());
@@ -181,7 +176,7 @@ public class DynamicDemo extends Activity implements SensorEventListener {
             }
         });
 
-        start.setOnClickListener(new OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -195,7 +190,7 @@ public class DynamicDemo extends Activity implements SensorEventListener {
             }
         });
 
-        finish.setOnClickListener(new OnClickListener() {
+        finish.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -309,7 +304,7 @@ public class DynamicDemo extends Activity implements SensorEventListener {
 
                 //显示当前定位点，缩放地图
                 locateAndZoom(location, ll);
-                if (ActivityCompat.checkSelfPermission(DynamicDemo.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(Pci.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
@@ -324,39 +319,29 @@ public class DynamicDemo extends Activity implements SensorEventListener {
                     CellInfo cellInfo = cellInfoList.get(i);
                     if (cellInfo instanceof CellInfoNr) {
                         CellInfoNr cellInfoNr = (CellInfoNr) cellInfo;
-                        //CellIdentityNr cellIdentityNr = (CellIdentityNr) cellInfoNr.getCellIdentity();
-                        CellSignalStrengthNr cellSignalStrengthNr = (CellSignalStrengthNr) cellInfoNr.getCellSignalStrength();
+                        CellIdentityNr cellIdentityNr = (CellIdentityNr) cellInfoNr.getCellIdentity();
+                        //CellSignalStrengthNr cellSignalStrengthNr = (CellSignalStrengthNr) cellInfoNr.getCellSignalStrength();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 StringBuilder currentposition=new StringBuilder();
-                                currentposition.append("ssrsrp：").append(-+cellSignalStrengthNr.getSsRsrp()).append("\n");
+                                currentposition.append("PCI：").append(cellIdentityNr.getPci()).append("\n");
                                 position.setText(currentposition);
                             }
                         });
-                        if(cellSignalStrengthNr.getSsRsrp()>40&&cellSignalStrengthNr.getSsRsrp()<=85){
+                        if(cellIdentityNr.getPci()>=26&&cellIdentityNr.getPci()<=30){
                             points1.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA2E8B57).points(points1);
+                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA0000FF).points(points1);
                             mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         }
-                        else if(cellSignalStrengthNr.getSsRsrp()>85&&cellSignalStrengthNr.getSsRsrp()<=95){
+                        else if(cellIdentityNr.getPci()>=22&&cellIdentityNr.getPci()<26){
                             points2.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA008000).points(points2);
+                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA2E8B57).points(points2);
                             mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         }
-                        else if(cellSignalStrengthNr.getSsRsrp()>95&&cellSignalStrengthNr.getSsRsrp()<=105){
+                        else if(cellIdentityNr.getPci()>=18&&cellIdentityNr.getPci()<22){
                             points3.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAAFFFFE0).points(points3);
-                            mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
-                        }
-                        else if(cellSignalStrengthNr.getSsRsrp()>105&&cellSignalStrengthNr.getSsRsrp()<=115){
-                            points4.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAAFFFF00).points(points4);
-                            mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
-                        }
-                        else {
-                            points5.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAAFF0000).points(points5);
+                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAAFF0000).points(points3);
                             mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         }
 
@@ -433,11 +418,11 @@ public class DynamicDemo extends Activity implements SensorEventListener {
                 //构建Marker图标
                 BitmapDescriptor bitmap = BitmapDescriptorFactory
                         .fromResource(R.drawable.ic_basestation);
-               //构建MarkerOption，用于在地图上添加Marker
+                //构建MarkerOption，用于在地图上添加Marker
                 OverlayOptions option = new MarkerOptions()
                         .position(point)
                         .icon(bitmap);
-               //在地图上添加Marker，并显示
+                //在地图上添加Marker，并显示
                 mBaiduMap.addOverlay(option);
             }
             @Override
