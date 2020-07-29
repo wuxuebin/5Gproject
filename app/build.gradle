@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        applicationId gradle.sdk.packageName
+        applicationId "com.punuo.sys.net"
         minSdkVersion gradle.sdk.minSdkVersion
         targetSdkVersion gradle.sdk.targetSdkVersion
         versionCode gradle.sdk.versionCode
@@ -50,6 +50,12 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
+//jar包和so文件都放在libs目录下。
+    sourceSets {
+        main() {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 
 }
