@@ -67,6 +67,22 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ThroughputDL"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ThroughputUL"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Pci"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Sinr"
+            android:screenOrientation="portrait">
+        </activity>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="ACfkWIcFxPPE3V3Srr0drgoOefAKFy9f" />

@@ -19,9 +19,43 @@
         android:id="@+id/display_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/mapbutton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="显示地图"/>
+        android:orientation="horizontal">
+        <Button
+        android:id="@+id/rsrp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+            android:layout_weight="1"
+        android:text="RSRP"/>
+
+        <Button
+            android:id="@+id/ul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="UL"/>
+
+        <Button
+            android:id="@+id/dl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="DL"/>
+
+        <Button
+            android:id="@+id/sinr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SINR"/>
+
+        <Button
+            android:id="@+id/pci"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PCI"/>
+    </LinearLayout>
 </LinearLayout>
