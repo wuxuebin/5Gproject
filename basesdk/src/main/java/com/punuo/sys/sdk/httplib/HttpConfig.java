@@ -1,5 +1,7 @@
 package com.punuo.sys.sdk.httplib;
 
+import com.punuo.sys.sdk.httplib.IHttpConfig;
+
 /**
  * Created by han.chen.
  * Date on 2019/4/23.
