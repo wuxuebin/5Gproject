@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.punuo.sys.net.R;
 import com.punuo.sys.sdk.recyclerview.BaseRecyclerViewAdapter;
 
