@@ -20,6 +20,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.telephony.CellIdentityNr;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoLte;
@@ -32,6 +34,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+
+import com.punuo.sys.net.adapter.Content;
+import com.punuo.sys.net.adapter.DataAdapter;
 
 import com.punuo.sys.net.delay.BadNetworkCase;
 import com.punuo.sys.net.delay.DxNetworkUtil;
@@ -82,10 +88,17 @@ public class MainActivity extends BaseActivity{
     private static int  timeSum;
     public static HashMap<Integer,Object> infoMap = new HashMap<>(18);
 
-
     private static long lastTotalRxBytes = 0;
     private static long lastTotalTxBytes = 0;
     private static long lastTime = 0;
+
+
+    /**
+     * 显示
+     */
+    public static List<Content> contentList = new ArrayList<>();
+    private DataAdapter adapter;
+    private RecyclerView mRecyclerView;
 
 
     private Button rsrpbutton;
@@ -120,9 +133,11 @@ public class MainActivity extends BaseActivity{
         setContentView(R.layout.activity_main);
         ProcessTasks.commonLaunchTasks(PnApplication.getInstance());
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        displaySignal = findViewById(R.id.display_sign);
-        displayIdentity = findViewById(R.id.display_identity);
         netType = findViewById(R.id.netType);
+
+        mRecyclerView = findViewById(R.id.list_view);
+        initView();
+
 
 
         rsrpbutton=findViewById(R.id.rsrp);
@@ -136,6 +151,7 @@ public class MainActivity extends BaseActivity{
         iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
         mReceiver = new SDKReceiver();
         registerReceiver(mReceiver, iFilter);
+
 
 
         mBaseHandler.sendEmptyMessage(SIGN_GET);
@@ -164,6 +180,14 @@ public class MainActivity extends BaseActivity{
                 startActivity(intent);
             }
         });
+
+
+    private void initView(){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+//        adapter = new DataAdapter(this,contentList);
+        adapter = new DataAdapter(this,new ArrayList<Content>());
+        mRecyclerView.setAdapter(adapter);
 
         sinrbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,7 +227,7 @@ public class MainActivity extends BaseActivity{
                 int result = (int) hwOwnMethod.invoke(serviceState);
                 Log.i("han.chen", "值为：" + result);
                 if (result == 20) {
-                    netType.setText("5g网络");
+                    netType.setText("5G");
                     Log.i("han.chen", "5g网络");
                 } else {
                     netType.setText("非5g网络");
@@ -233,74 +257,22 @@ public class MainActivity extends BaseActivity{
             if (cellInfo instanceof CellInfoNr) {
                 CellInfoNr cellInfoNr = (CellInfoNr) cellInfo;
                 CellIdentityNr cellIdentityNr = (CellIdentityNr) cellInfoNr.getCellIdentity();
-                StringBuilder identity = new StringBuilder();
-                identity.append("基站信息: \n")
-                        .append("基站编号 CID: ")
-                        .append(cellIdentityNr.getNci())
-                        .append("\n")
-                        .append("Physical Cell Id: ")
-                        .append(cellIdentityNr.getPci())
-                        .append("\n")
-                        .append("Tracking Area Code: ")
-                        .append(cellIdentityNr.getTac())
-                        .append("\n")
-                        .append("New Radio Absolute Radio Frequency Channel Number: ")
-                        .append(cellIdentityNr.getNrarfcn())
-                        .append("\n")
-                        .append("移动国家代码 MCC: ")
-                        .append(cellIdentityNr.getMccString())
-                        .append("\n")
-                        .append("移动网络号码 MNC: ")
-                        .append(cellIdentityNr.getMncString())
-                        .append("\n");
-                displayIdentity.setText(identity.toString());
-
                 //TODO 添加数据到集合(注意需要按照顺序添加)
                 infoMap.put(0,4915882);
                 infoMap.put(1,"NSA_H_杭州西湖留下BBU9");
                 infoMap.put(2,cellIdentityNr.getPci());
-
+                infoMap.put(18,cellIdentityNr.getMncString());
+                infoMap.put(19,cellIdentityNr.getMccString());
                 CellSignalStrengthNr cellSignalStrengthNr = (CellSignalStrengthNr) cellInfoNr.getCellSignalStrength();
-                StringBuilder signal = new StringBuilder();
-                signal.append("信号信息：\n")
-                        .append("asuLevel: ")
-                        .append(cellSignalStrengthNr.getAsuLevel())
-                        .append("\n")
-                        .append("dbm: ")
-                        .append(cellSignalStrengthNr.getDbm())
-                        .append("\n")
-                        .append("level: ")
-                        .append(cellSignalStrengthNr.getLevel())
-                        .append("\n")
-                        .append("csiRsrp: ")
-                        .append(cellSignalStrengthNr.getCsiRsrp())
-                        .append("\n")
-                        .append("csiRsrq: ")
-                        .append(cellSignalStrengthNr.getCsiRsrq())
-                        .append("\n")
-                        .append("csiSinr: ")
-                        .append(cellSignalStrengthNr.getCsiSinr())
-                        .append("\n")
-                        .append("ssRsrp: ")
-                        .append(cellSignalStrengthNr.getSsRsrp())
-                        .append("\n")
-                        .append("ssRsrq: ")
-                        .append(cellSignalStrengthNr.getSsRsrq())
-                        .append("\n")
-                        .append("ssSinr: ")
-                        .append(cellSignalStrengthNr.getSsSinr())
-                        .append("\n");
-                displaySignal.setText(signal.toString());
 
+                infoMap.put(3,-cellSignalStrengthNr.getSsRsrp());
+                infoMap.put(4,-cellSignalStrengthNr.getSsRsrp());
 
-//                TODO 添加数据到集合(注意需要按照顺序添加)
-                infoMap.put(3,cellSignalStrengthNr.getSsRsrp());
-                infoMap.put(4,cellSignalStrengthNr.getSsRsrp());
                 infoMap.put(5,cellSignalStrengthNr.getSsSinr());
                 infoMap.put(6,cellSignalStrengthNr.getSsSinr());
-                infoMap.put(11,-1);
-                infoMap.put(12,-1);
-                infoMap.put(13,-1);
+                infoMap.put(11,51);
+                infoMap.put(12,51);
+                infoMap.put(13,0);
 
             }
         }
@@ -322,19 +294,43 @@ public class MainActivity extends BaseActivity{
         MainActivityPermissionsDispatcher.getAllCellInfoWithCheck(this);
         getOtherData();
 
-        for (Map.Entry<Integer, Object> entry : infoMap.entrySet()) {
-            Log.i(TAG, "key= " + entry.getKey() + " and value= " + entry.getValue());
-        }
+//        for (Map.Entry<Integer, Object> entry : infoMap.entrySet()) {
+//            Log.i(TAG, "整个map中的数据 ：key= " + entry.getKey() + " and value= " + entry.getValue());
+//        }
 
-        if(infoMap.size()!=18){
-            Log.i(TAG, "网络问题，获取数据不全，无法上传");
-        }else{
-            pushInfo();
-        }
+        pushInfo();
+        showData();
+        contentList.clear();
 
-        mBaseHandler.sendEmptyMessageDelayed(SIGN_GET, 10* 1000);
+        mBaseHandler.sendEmptyMessageDelayed(SIGN_GET, 3* 1000);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void showData(){
+        contentList.add(new Content("MNC",String.valueOf(infoMap.get(18))));
+        contentList.add(new Content("MCC",String.valueOf(infoMap.get(19))));
+        contentList.add(new Content("PCI",String.valueOf(infoMap.get(2))));
+        contentList.add(new Content("RSRP",String.valueOf(infoMap.get(3))));
+        contentList.add(new Content("SINR",String.valueOf(infoMap.get(5))));
+        contentList.add(new Content("DELAY_REQUEST",String.valueOf(infoMap.get(7))));
+        contentList.add(new Content("DELAY_SUCCESS",String.valueOf(infoMap.get(8))));
+        contentList.add(new Content("DELAY_FAIL",String.valueOf(infoMap.get(9))));
+        contentList.add(new Content("DELAY",String.valueOf(infoMap.get(10))));
+        contentList.add(new Content("NSA_REQUEST",String.valueOf(infoMap.get(11))));
+        contentList.add(new Content("NSA_SUCCESS",String.valueOf(infoMap.get(12))));
+        contentList.add(new Content("NSA_FAIL",String.valueOf(infoMap.get(13))));
+        contentList.add(new Content("LONGITUDE",String.valueOf(infoMap.get(14))));
+        contentList.add(new Content("LATITUDE",String.valueOf(infoMap.get(15))));
+        contentList.add(new Content("THROUGHPUT_UL",String.valueOf(infoMap.get(16))));
+        contentList.add(new Content("THROUGHPUT_DL",String.valueOf(infoMap.get(17))));
+        adapter.clear();
+        adapter.addAll(contentList);
+        adapter.notifyDataSetChanged();
+    }
     /**
      * 上传数据到后台
      */
@@ -382,7 +378,7 @@ public class MainActivity extends BaseActivity{
 
             @Override
             public void onError(Exception e) {
-                Log.i(TAG, e.getMessage());
+                Log.i("上传数据时出现的错误是：", e.getMessage());
             }
         });
         HttpManager.addRequest(mPushRequest);
@@ -436,23 +432,25 @@ public class MainActivity extends BaseActivity{
                         timeSum+=Float.parseFloat(time.substring(0,4));
                     }
                 }
-                Log.i("kuiya", "反馈结果为:"+"\t"+buffer.toString());
+//                Log.i("kuiya", "反馈结果为:"+"\t"+buffer.toString());
                 if(status==0){
                     //代表成功
-                    infoMap.put(7,3);
-                    infoMap.put(8,3);
+                    infoMap.put(7,10);
+                    infoMap.put(8,10);
                     infoMap.put(9,0);
                     delay =(float) timeSum/3;
+                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                    delay = Float.parseFloat(decimalFormat.format(delay));
                     infoMap.put(10,delay);
                     //将静态变量还原，供下次使用
                     timeSum=0;
-                    Log.i(TAG, "成功");
+//                    Log.i(TAG, "ping时延成功");
                 }else{
-                    infoMap.put(7,3);
+                    infoMap.put(7,10);
                     infoMap.put(8,0);
-                    infoMap.put(9,3);
+                    infoMap.put(9,10);
                     infoMap.put(10,-1);//没有成功
-                    Log.i(TAG, "失败");
+//                    Log.i(TAG, "ping时延失败");
                 }
             }else{
                 ToastUtils.showToast("IP为空");
@@ -596,11 +594,11 @@ public class MainActivity extends BaseActivity{
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             String longitude = decimalFormat.format(location.getLongitude());
             String latitude  = decimalFormat.format(location.getLatitude());
-            stringBuilder.append("您的位置信息：\n");
+            stringBuilder.append("您的位置信息：");
             stringBuilder.append("经度：");
             stringBuilder.append(longitude);
-            stringBuilder.append("\n纬度：");
-            stringBuilder.append(latitude);
+            stringBuilder.append("纬度：");
+            stringBuilder.append(latitude); 
             Log.i(TAG, "locationUpdates: "+stringBuilder.toString());
             infoMap.put(14,longitude);
             infoMap.put(15,latitude);

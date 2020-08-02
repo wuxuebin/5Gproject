@@ -4,21 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:background="@color/black">
 
     <TextView
         android:id="@+id/netType"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/display_identity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/display_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -59,5 +60,6 @@
             android:layout_weight="1"
             android:text="PCI"/>
     </LinearLayout>
+
 
 </LinearLayout>
