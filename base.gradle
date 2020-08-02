@@ -1,5 +1,5 @@
 ext.sdk = [
-        packageName : 'com.punuo.net',
+        packageName : 'com.punuo.sys.net',
         versionCode : 1,
         versionName : "1.0.0",
         minSdkVersion          : 29,
