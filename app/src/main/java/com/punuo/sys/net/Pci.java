@@ -78,8 +78,10 @@ public class Pci extends Activity implements SensorEventListener {
     List<LatLng> points1 = new ArrayList<LatLng>();
     List<LatLng> points2 = new ArrayList<LatLng>();
     List<LatLng> points3 = new ArrayList<LatLng>();
-    List<LatLng> points4 = new ArrayList<LatLng>();
-    List<LatLng> points5 = new ArrayList<LatLng>();
+    private TextView bluetext;
+    private TextView redtext;
+    private TextView seagreentext;
+    private int PCI;
     Polyline mPolyline;//运动轨迹图层
     LatLng last = new LatLng(0, 0);//上一个定位点
     MapStatus.Builder builder;
@@ -156,6 +158,31 @@ public class Pci extends Activity implements SensorEventListener {
         info = (TextView) findViewById(R.id.info);
         progressBarRl = (RelativeLayout) findViewById(R.id.progressBarRl);
         position = findViewById(R.id.LatandLong);
+        bluetext = findViewById(R.id.pciblue);
+        redtext = findViewById(R.id.pcired);
+        seagreentext = findViewById(R.id.pciseagreen);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        cellInfoList = telephonyManager.getAllCellInfo();
+        for (int i = 0; i < cellInfoList.size(); i++) {
+            CellInfo cellInfo = cellInfoList.get(i);
+            if (cellInfo instanceof CellInfoNr) {
+                CellInfoNr cellInfoNr = (CellInfoNr) cellInfo;
+                CellIdentityNr cellIdentityNr = (CellIdentityNr) cellInfoNr.getCellIdentity();
+                PCI=cellIdentityNr.getPci();
+                redtext.setText(String.valueOf(PCI));
+                seagreentext.setText(String.valueOf(PCI+1));
+                bluetext.setText(String.valueOf(PCI+2));
+            }
+        }
 
         getstation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,22 +356,21 @@ public class Pci extends Activity implements SensorEventListener {
                                 position.setText(currentposition);
                             }
                         });
-                        if(cellIdentityNr.getPci()>=26&&cellIdentityNr.getPci()<=30){
+                        if(cellIdentityNr.getPci()==PCI+2){
                             points1.add(ll);
                             OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA0000FF).points(points1);
                             mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         }
-                        else if(cellIdentityNr.getPci()>=22&&cellIdentityNr.getPci()<26){
-                            points2.add(ll);
-                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA2E8B57).points(points2);
-                            mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
-                        }
-                        else if(cellIdentityNr.getPci()>=18&&cellIdentityNr.getPci()<22){
+                        else if(cellIdentityNr.getPci()==PCI){
                             points3.add(ll);
                             OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAAFF0000).points(points3);
                             mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
                         }
-
+                        else if(cellIdentityNr.getPci()==PCI+1){
+                            points2.add(ll);
+                            OverlayOptions ooPolyline = new PolylineOptions().width(13).color(0xAA2E8B57).points(points2);
+                            mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
+                        }
                     }
                 }
 

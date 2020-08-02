@@ -62,25 +62,10 @@
                 android:layout_gravity="center"
                 />
             <TextView
+                android:id="@+id/pciblue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[26,30)"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:src="@drawable/ic_seagreen_circle"
-                android:layout_gravity="center"
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="[22,26)"/>
         </LinearLayout>
 
         <LinearLayout
@@ -94,9 +79,27 @@
                 android:layout_gravity="center"
                 />
             <TextView
+                android:id="@+id/pcired"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[18,22)"/>
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_seagreen_circle"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:id="@+id/pciseagreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
         </LinearLayout>
 
     </LinearLayout>
