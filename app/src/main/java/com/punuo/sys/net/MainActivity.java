@@ -136,9 +136,12 @@ public class MainActivity extends BaseActivity{
         netType = findViewById(R.id.netType);
 
         mRecyclerView = findViewById(R.id.list_view);
-        initView();
 
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+//        adapter = new DataAdapter(this,contentList);
+        adapter = new DataAdapter(this,new ArrayList<Content>());
+        mRecyclerView.setAdapter(adapter);
 
         rsrpbutton=findViewById(R.id.rsrp);
         ulbutton=findViewById(R.id.ul);
@@ -180,14 +183,6 @@ public class MainActivity extends BaseActivity{
                 startActivity(intent);
             }
         });
-
-
-    private void initView(){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-//        adapter = new DataAdapter(this,contentList);
-        adapter = new DataAdapter(this,new ArrayList<Content>());
-        mRecyclerView.setAdapter(adapter);
 
         sinrbutton.setOnClickListener(new View.OnClickListener() {
             @Override
