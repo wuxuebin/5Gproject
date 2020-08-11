@@ -268,7 +268,6 @@ public class MainActivity extends BaseActivity{
                 infoMap.put(11,51);
                 infoMap.put(12,51);
                 infoMap.put(13,0);
-
             }
         }
     }
@@ -292,7 +291,6 @@ public class MainActivity extends BaseActivity{
 //        for (Map.Entry<Integer, Object> entry : infoMap.entrySet()) {
 //            Log.i(TAG, "整个map中的数据 ：key= " + entry.getKey() + " and value= " + entry.getValue());
 //        }
-
         pushInfo();
         showData();
         contentList.clear();
@@ -389,11 +387,11 @@ public class MainActivity extends BaseActivity{
             public void run() {
                 //注意不能在子线程直接toast
                 Looper.prepare();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 judgeTheConnect("www.baidu.com");
                 getNetSpeed();
                 getLocation();
