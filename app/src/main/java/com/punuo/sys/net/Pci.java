@@ -177,10 +177,12 @@ public class Pci extends Activity implements SensorEventListener {
             if (cellInfo instanceof CellInfoNr) {
                 CellInfoNr cellInfoNr = (CellInfoNr) cellInfo;
                 CellIdentityNr cellIdentityNr = (CellIdentityNr) cellInfoNr.getCellIdentity();
-                PCI=cellIdentityNr.getPci();
-                redtext.setText(String.valueOf(PCI));
-                seagreentext.setText(String.valueOf(PCI+1));
-                bluetext.setText(String.valueOf(PCI+2));
+                if(cellIdentityNr!=null) {
+                    PCI = cellIdentityNr.getPci();
+                    redtext.setText(String.valueOf(PCI));
+                    seagreentext.setText(String.valueOf(PCI + 1));
+                    bluetext.setText(String.valueOf(PCI + 2));
+                }
             }
         }
 
